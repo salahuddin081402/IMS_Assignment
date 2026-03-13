@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'invoice_no',
+        'customer_id',
         'invoice_date',
         'subtotal',
         'discount_type',
@@ -42,4 +44,3 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class);
     }
 }
-

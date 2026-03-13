@@ -4,23 +4,36 @@
 
 @section('content')
     <div class="row g-4">
+
         <!-- Left: Products -->
         <div class="col-lg-8">
+
             <!-- Search -->
             <div class="card mb-3">
                 <div class="card-body py-3">
                     <div class="row g-2">
-                        <div class="col-md-6">
+
+                        <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search product by name or SKU..." id="searchInput">
+                                <input type="text" class="form-control" placeholder="Search product by name or SKU..."
+                                    id="searchInput">
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <select class="form-select" id="categoryFilter">
                                 <option value="">All categories</option>
                             </select>
                         </div>
+
+                        <!-- CUSTOMER DROPDOWN -->
+                        <div class="col-md-4">
+                            <select class="form-select" id="customerSelect">
+                                <option value="">Select Customer</option>
+                            </select>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -34,73 +47,86 @@
                 <div class="card-body">
                     <div class="row g-3" id="productGrid">
                         <div class="col-12 text-center text-muted py-4">Loading products...</div>
-
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Right: Cart -->
         <div class="col-lg-4">
             <div class="card cart-sticky">
+
                 <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
                     <span><i class="bi bi-cart3 me-2"></i>Cart</span>
                     <span class="badge bg-white text-primary" id="cartBadge">0 items</span>
                 </div>
-                <div class="card-body p-0">
-                    <!-- Cart Items -->
-                    <div class="p-3" style="max-height: 320px; overflow-y: auto;" id="cartItemsContainer">
-                        <div class="text-center text-muted py-4">Cart is empty</div>
 
+                <div class="card-body p-0">
+
+                    <!-- CUSTOMER DISPLAY -->
+                    <div id="selectedCustomerBox" class="alert alert-info m-2 py-2 px-2" style="display:none;">
+                        <strong>Customer:</strong>
+                        <span id="selectedCustomerName"></span>
+                        (<span id="selectedCustomerMobile"></span>)
+                    </div>
+
+                    <!-- Cart Items -->
+                    <div class="p-3" style="max-height:320px; overflow-y:auto;" id="cartItemsContainer">
+                        <div class="text-center text-muted py-4">Cart is empty</div>
                     </div>
 
                     <!-- Totals -->
-                    <div class="border-top p-3 bg-light" id="totalsSection" style="display: none">
-                        <!-- Subtotal -->
+                    <div class="border-top p-3 bg-light" id="totalsSection" style="display:none">
+
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Subtotal</span>
                             <span id="subtotalDisplay">$ 0.00</span>
                         </div>
 
-                        <!-- Item discounts total -->
-                        <div class="d-flex justify-content-between mb-2 text-danger" id="itemDiscountRow" style="display: none">
+                        <div class="d-flex justify-content-between mb-2 text-danger" id="itemDiscountRow"
+                            style="display:none">
                             <span>Item Discounts</span>
                             <span id="itemDiscountDisplay">- $ 0.00</span>
                         </div>
 
-                        <!-- Invoice discount -->
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="text-muted">Invoice Discount</span>
                             <div class="d-flex align-items-center gap-1">
-                                <select class="form-select form-select-sm" id="invoiceDiscountType" style="width: 65px;">
+                                <select class="form-select form-select-sm" id="invoiceDiscountType" style="width:65px;">
                                     <option value="">None</option>
-                                    <option value="fixed" selected>$</option>
+                                    <option value="fixed">$</option>
                                     <option value="percent">%</option>
                                 </select>
-                                <input type="number" class="form-control form-control-sm" id="invoiceDiscountValue" style="width: 70px;" value="0" min="0">
+                                <input type="number" class="form-control form-control-sm" id="invoiceDiscountValue"
+                                    style="width:70px;" value="0" min="0">
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mb-2 text-danger" id="invoiceDiscountRow" style="display: none">
+
+                        <div class="d-flex justify-content-between mb-2 text-danger" id="invoiceDiscountRow"
+                            style="display:none">
                             <span></span>
                             <span id="invoiceDiscountDisplay">- $ 0.00</span>
                         </div>
 
                         <hr class="my-2">
 
-                        <!-- Grand Total -->
                         <div class="d-flex justify-content-between fs-5 fw-bold">
                             <span>Grand Total</span>
                             <span class="text-success" id="grandTotalDisplay">$ 0.00</span>
                         </div>
+
                     </div>
 
-                    <!-- Invoice Info & Actions -->
+                    <!-- Invoice Info -->
                     <div class="border-top p-3">
+
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label small text-muted mb-1">Invoice No</label>
-                                <input type="text" class="form-control form-control-sm"  id="invoiceNoInput" value="" readonly>
+                                <input type="text" class="form-control form-control-sm" id="invoiceNoInput" readonly>
                             </div>
+
                             <div class="col-6">
                                 <label class="form-label small text-muted mb-1">Date</label>
                                 <input type="date" class="form-control form-control-sm" id="invoiceDateInput">
@@ -108,443 +134,434 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-success btn-lg" id="finalizeBtn" disabled>
+                            <button class="btn btn-success btn-lg" id="finalizeBtn" disabled>
                                 <i class="bi bi-check-circle me-2"></i>Finalize Invoice
                             </button>
+
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-outline-primary w-100" id="saveDraftBtn" disabled>
+                                    <button class="btn btn-outline-primary w-100" id="saveDraftBtn" disabled>
                                         <i class="bi bi-save me-1"></i>Save Draft
                                     </button>
                                 </div>
+
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-outline-secondary w-100" id="clearCartBtn">
+                                    <button class="btn btn-outline-secondary w-100" id="clearCartBtn">
                                         <i class="bi bi-x-lg me-1"></i>Clear
                                     </button>
                                 </div>
                             </div>
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
+
     </div>
 
     @push('scripts')
         <script>
-            // API URLS
-            let productsUrl  = '{{ url("/api/v1/products") }}';
-            let categoriesUrl = '{{ url("/api/v1/categories") }}';
-            let invoicesUrl  = '{{ url("/api/v1/invoices") }}';
 
-            // Data holders or State
-            let allProducts  = [];
+            let productsUrl = '{{ url("/api/v1/products") }}';
+            let categoriesUrl = '{{ url("/api/v1/categories") }}';
+            let customersUrl = '{{ url("/api/v1/customers") }}';
+            let invoicesUrl = '{{ url("/api/v1/invoices") }}';
+
+            let allProducts = [];
             let allCategories = [];
             let cart = [];
 
-            // Helper functions
-            function getToken() {
-                return localStorage.getItem('token') || '';
-            }
-
+            function getToken() { return localStorage.getItem('token') || ''; }
             function authHeaders() {
-                return { headers: { Authorization: 'Bearer ' + getToken() } };
+                const token = getToken();
+                return token ? { headers: { Authorization: 'Bearer ' + token } } : {};
             }
-
-            function formatMoney(amount) {
-                return '$ ' + parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            function formatMoney(a) {
+                return '$ ' + (parseFloat(a || 0)).toFixed(2);
             }
+            async function loadCategories() {
 
-            function todayDate() {
-                let d = new Date();
-                let y = d.getFullYear();
-                let m = String(d.getMonth() + 1).padStart(2, '0');
-                let day = String(d.getDate()).padStart(2, '0');
-                return y + '-' + m + '-' + day;
-            }
-
-            function escapeHtml(text) {
-                let div = document.createElement('div');
-                div.textContent = text == null ? '' : text;
-                return div.innerHTML;
-            }
-
-            // ─── Load Categories ────────────────────────────────────────
-           async function loadCategories(){
-                try{
-                    let response = await axios.get(categoriesUrl,authHeaders());
-                    allCategories = response.data['data'] || [];
-                    let select = document.getElementById('categoryFilter');
-                    select.innerHTML = '<option value="">All categories</option>';
-                    allCategories.forEach(function (category){
-                        select.innerHTML += '<option value="'+ category.id + '">'+ escapeHtml(category.name) +'</option>';
-                    });
-                }catch (err){
-                    showErrorToast(getErrorMessage(err, 'Failed to load categories.'));
-                }
-           }
-
-            loadCategories();
-
-            //Load products and render grid
-            async function loadProducts() {
-                let grid = document.getElementById('productGrid');
                 try {
-                    let response = await axios.get(productsUrl, authHeaders());
-                    allProducts = response.data['data'] || [];
-                    renderProducts();
-                } catch (err) {
-                    grid.innerHTML = '<div class="col-12 text-center text-muted py-4">Failed to load products.</div>';
-                    showErrorToast(getErrorMessage(err, 'Failed to load products.'));
+
+                    let r = await axios.get(categoriesUrl, authHeaders());
+
+                    allCategories = r.data.data || [];
+
+                    let s = document.getElementById('categoryFilter');
+
+                    s.innerHTML = '<option value="">All categories</option>';
+
+                    allCategories.forEach(c => {
+                        s.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+                    });
+
+                } catch (e) {
+
+                    console.error('Category load failed', e);
+
                 }
+
+            }
+            async function loadProducts() {
+
+                try {
+
+                    let r = await axios.get(productsUrl, authHeaders());
+
+                    allProducts = r.data.data || [];
+
+                    renderProducts(allProducts);
+
+                } catch (e) {
+
+                    document.getElementById('productGrid').innerHTML =
+                        '<div class="col-12 text-center text-danger py-4">Failed to load products</div>';
+
+                }
+
             }
 
-            function renderProducts() {
-                let searchText = (document.getElementById('searchInput').value || '').toLowerCase();
-                let categoryId = document.getElementById('categoryFilter').value;
+            function renderProducts(products) {
+
                 let grid = document.getElementById('productGrid');
 
-                // Filter products by search and category
-                let filtered = allProducts.filter(function (product) {
-                    let matchesSearch = !searchText
-                        || (product.product_name || '').toLowerCase().includes(searchText)
-                        || (product.sku || '').toLowerCase().includes(searchText);
-                    let matchesCategory = !categoryId || String(product.category_id) === String(categoryId);
-                    return matchesSearch && matchesCategory;
-                });
-
-                if (filtered.length === 0) {
-                    grid.innerHTML = '<div class="col-12 text-center text-muted py-4">No products found.</div>';
+                if (!products.length) {
+                    grid.innerHTML = '<div class="col-12 text-center text-muted py-4">No products found</div>';
                     return;
                 }
 
                 grid.innerHTML = '';
 
-                filtered.forEach(function (product) {
-                    let stockQty = product.stock_qty != null ? parseInt(product.stock_qty) : 0;
-                    let price = product.price != null ? parseFloat(product.price) : 0;
-                    let isOutOfStock = stockQty <= 0;
-                    let categoryName = product.category ? product.category.name : '';
-                    let stockBadgeClass = stockQty <= 0 ? 'text-bg-secondary' : (stockQty <= 5 ? 'text-bg-warning' : 'text-bg-success');
+                products.forEach(p => {
 
-                    let col = document.createElement('div');
-                    col.className = 'col-6 col-md-4 col-xl-3';
-                    col.innerHTML =
-                        '<div class="card pos-product-card h-100' + (isOutOfStock ? ' out-of-stock' : '') + '" data-product-id="' + product.id + '">' +
-                        '  <div class="product-image"><i class="bi bi-box"></i></div>' +
-                        '  <div class="card-body p-2">' +
-                        '    <div class="fw-semibold small text-truncate" title="' + escapeHtml(product.product_name) + '">' + escapeHtml(product.product_name) + '</div>' +
-                        '    <div class="text-muted small">' + escapeHtml(product.sku) + '</div>' +
-                        '    <div class="text-muted small">' + escapeHtml(categoryName) + '</div>' +
-                        '    <div class="d-flex justify-content-between align-items-center mt-2">' +
-                        '      <span class="fw-bold text-primary">' + formatMoney(price) + '</span>' +
-                        '      <span class="badge ' + stockBadgeClass + '">' + stockQty + '</span>' +
-                        '    </div>' +
-                        '  </div>' +
-                        '</div>';
+                    let card = `
+                                                                                                                                                                        <div class="col-md-4">
+                                                                                                                                                                            <div class="card h-100 product-card" style="cursor:pointer"
+                                                                                                                                                                                onclick="addToCart(${p.id})">
 
-                    if (!isOutOfStock) {
-                        col.querySelector('.pos-product-card').addEventListener('click', function () {
-                            addToCart(product);
-                        });
-                    }
+                                                                                                                                                                                <div class="card-body text-center">
 
-                    grid.appendChild(col);
+                                                                                                                                                                                   <h6 class="fw-semibold mb-1">${p.product_name || ''}</h6>
+
+                                                                                                                                                                                    <div class="text-muted small mb-2">
+                                                                                                                                                                                        ${p.category ? p.category.name : ''}
+                                                                                                                                                                                    </div>
+
+                                                                                                                                                                                    <div class="fw-bold text-primary">
+                                                                                                                                                                                       $ ${parseFloat(p.price || 0).toFixed(2)}
+                                                                                                                                                                                    </div>
+
+                                                                                                                                                                                    <div class="small text-muted mt-1">
+                                                                                                                                                                                     Stock: ${p.stock_qty ?? p.stock ?? 0}
+                                                                                                                                                                                    </div>
+
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                        `;
+
+                    grid.insertAdjacentHTML('beforeend', card);
+
                 });
+
             }
 
-            loadProducts();
 
-            // ─── Cart: Add ──────────────────────────────────────────────
-            function addToCart(product) {
-                let stockQty = product.stock_qty != null ? parseInt(product.stock_qty) : 0;
-                if (stockQty <= 0) return;
 
-                let unitPrice = product.price != null ? parseFloat(product.price) : 0;
-                let existingItem = cart.find(function (item) { return item.product_id === product.id; });
+            async function loadCustomers() {
+                try {
+                    let r = await axios.get(customersUrl, authHeaders());
+                    let customers = r.data.data || [];
 
-                if (existingItem) {
-                    if (existingItem.quantity >= stockQty) return;
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        product_id: product.id,
-                        product_name: product.product_name || '',
-                        sku: product.sku || '',
-                        unit_price: unitPrice,
-                        quantity: 1,
-                        discount_type: '',
-                        discount_value: 0,
-                        discount_amount: 0,
-                        line_total: unitPrice,
-                        max_stock: stockQty
+                    let s = document.getElementById('customerSelect');
+                    s.innerHTML = '<option value="">Select Customer</option>';
+
+                    customers.forEach(c => {
+                        s.innerHTML += '<option value="' + c.id + '" data-mobile="' + (c.mobile || '') + '">' + c.name + '</option>';
                     });
+
+                } catch (e) {
+                    console.error('Customer load failed', e);
                 }
-
-                recalcCart();
-                renderCart();
             }
 
-            // ─── Cart: Remove ───────────────────────────────────────────
-            function removeFromCart(productId) {
-                cart = cart.filter(function (item) { return item.product_id !== productId; });
+            const customerSelect = document.getElementById('customerSelect');
+            if (customerSelect) {
+                customerSelect.addEventListener('change', function () {
 
-                // Reset invoice discount if cart becomes empty
-                if (cart.length === 0) {
-                    document.getElementById('invoiceDiscountType').value = '';
-                    document.getElementById('invoiceDiscountValue').value = '0';
-                    // document.getElementById('itemDiscountDisplay').innerHTML = '0';
-                }
-                recalcCart();
-                renderCart();
-            }
+                    let name = this.options[this.selectedIndex].text;
+                    let mobile = this.options[this.selectedIndex].getAttribute('data-mobile');
 
-            // ─── Cart: Change Quantity ───────────────────────────────────
-            function changeQuantity(productId, delta) {
-                let item = cart.find(function (x) { return x.product_id === productId; });
-                if (!item) return;
-
-                let newQty = item.quantity + delta;
-                if (newQty < 1) { removeFromCart(productId); return; }
-                if (newQty > item.max_stock) newQty = item.max_stock;
-
-                item.quantity = newQty;
-                recalcCart();
-                renderCart();
-            }
-
-            // ─── Cart: Update Item Discount ─────────────────────────────
-            function updateItemDiscount(productId, discountType, discountValue) {
-                let item = cart.find(function (x) { return x.product_id === productId; });
-                if (!item) return;
-
-                item.discount_type = discountType || '';
-                item.discount_value = parseFloat(discountValue) || 0;
-                recalcCart();
-                renderCart();
-            }
-
-            // ─── Recalculate Cart ───────────────────────────────────────
-            function recalcCart() {
-                cart.forEach(function (item) {
-                    let lineBeforeDiscount = item.quantity * item.unit_price;
-                    let discountAmount = 0;
-
-                    if (item.discount_type === 'fixed') {
-                        discountAmount = Math.min(item.discount_value * item.quantity, lineBeforeDiscount);
-                        // discountAmount = lineBeforeDiscount - item.discount_value;
-                    } else if (item.discount_type === 'percent') {
-                        discountAmount = lineBeforeDiscount * (item.discount_value / 100);
+                    if (this.value) {
+                        document.getElementById('selectedCustomerBox').style.display = 'block';
+                        document.getElementById('selectedCustomerName').innerText = name;
+                        document.getElementById('selectedCustomerMobile').innerText = mobile;
+                    } else {
+                        document.getElementById('selectedCustomerBox').style.display = 'none';
                     }
 
-                    item.discount_amount = Math.round(discountAmount * 100) / 100;
-                    item.line_total = Math.round((lineBeforeDiscount - item.discount_amount) * 100) / 100;
+                });
+            }
+
+            function buildInvoicePayload(status) {
+
+                let invoiceNo = document.getElementById('invoiceNoInput').value;
+                let customerId = document.getElementById('customerSelect').value || null;
+                let invoiceDate = document.getElementById('invoiceDateInput').value;
+
+                let discountType = document.getElementById('invoiceDiscountType').value || null;
+                let discountValue = parseFloat(document.getElementById('invoiceDiscountValue').value) || 0;
+
+                let subtotal = 0;
+                let discountAmount = 0;
+                let items = [];
+
+                cart.forEach(item => {
+
+                    let quantity = parseFloat(item.quantity) || 0;
+                    let unitPrice = parseFloat(item.unit_price) || 0;
+                    let lineTotal = parseFloat(item.line_total) || (quantity * unitPrice);
+
+                    subtotal += quantity * unitPrice;
+
+                    items.push({
+                        product_id: item.product_id,
+                        quantity: quantity,
+                        unit_price: unitPrice,
+                        discount_type: item.discount_type || null,
+                        discount_value: parseFloat(item.discount_value) || 0,
+                        discount_amount: parseFloat(item.discount_amount) || 0,
+                        line_total: lineTotal
+                    });
+
+                    discountAmount += parseFloat(item.discount_amount) || 0;
                 });
 
-                updateTotals();
-            }
+                let invoiceDiscountAmount = 0;
 
-            function getSubtotal() {
-                return cart.reduce(function (sum, item) { return sum + item.line_total; }, 0);
-            }
-
-            function getItemDiscountsTotal() {
-                return cart.reduce(function (sum, item) { return sum + item.discount_amount; }, 0);
-            }
-
-            function getInvoiceDiscountAmount() {
-                let type  = document.getElementById('invoiceDiscountType').value;
-                let value = parseFloat(document.getElementById('invoiceDiscountValue').value) || 0;
-                let subtotal = getSubtotal();
-
-                if (type === 'fixed')   return Math.min(value, subtotal);
-                if (type === 'percent') return Math.round(subtotal * value / 100 * 100) / 100;
-                return 0;
-            }
-
-            // ─── Update Totals Display ──────────────────────────────────
-            function updateTotals() {
-                let subtotal = getSubtotal();
-                let itemDiscountsTotal = getItemDiscountsTotal();
-                let invoiceDiscountAmount = getInvoiceDiscountAmount();
-                let grandTotal = Math.round((subtotal - invoiceDiscountAmount) * 100) / 100;
-
-                document.getElementById('subtotalDisplay').textContent = formatMoney(subtotal);
-                document.getElementById('grandTotalDisplay').textContent = formatMoney(grandTotal);
-
-                // Item discounts row
-                let itemDiscountRow = document.getElementById('itemDiscountRow');
-                document.getElementById('itemDiscountDisplay').textContent = '- ' + formatMoney(itemDiscountsTotal);
-                itemDiscountRow.style.display = itemDiscountsTotal > 0 ? 'flex' : 'none';
-
-                // Invoice discount row
-                let invoiceDiscountRow = document.getElementById('invoiceDiscountRow');
-                document.getElementById('invoiceDiscountDisplay').textContent = '- ' + formatMoney(invoiceDiscountAmount);
-                invoiceDiscountRow.style.display = invoiceDiscountAmount > 0 ? 'flex' : 'none';
-
-                // Cart badge & buttons
-                document.getElementById('cartBadge').textContent = cart.length + ' item' + (cart.length !== 1 ? 's' : '');
-                document.getElementById('totalsSection').style.display = cart.length > 0 ? 'block' : 'none';
-                document.getElementById('finalizeBtn').disabled = cart.length === 0;
-                document.getElementById('saveDraftBtn').disabled = cart.length === 0;
-            }
-
-            // ─── Render Cart ────────────────────────────────────────────
-            function renderCart() {
-                let container = document.getElementById('cartItemsContainer');
-
-                if (cart.length === 0) {
-                    container.innerHTML = '<div class="text-center text-muted py-4">Cart is empty</div>';
-                    updateTotals();
-                    return;
+                if (discountType === 'percent') {
+                    invoiceDiscountAmount = subtotal * (discountValue / 100);
+                } else if (discountType === 'fixed') {
+                    invoiceDiscountAmount = discountValue;
                 }
 
-                let html = '';
-
-                cart.forEach(function (item) {
-                    let hasDiscount = item.discount_type && item.discount_value > 0;
-
-                    html +=
-                        '<div class="pos-cart-item">' +
-                        // Product name + remove button
-                        '<div class="d-flex justify-content-between align-items-start mb-2">' +
-                        '<div class="flex-grow-1 me-2">' +
-                        '<div class="fw-semibold">' + escapeHtml(item.product_name) + '</div>' +
-                        '<div class="text-muted small">' + formatMoney(item.unit_price) + ' × ' + item.quantity + '</div>' +
-                        '</div>' +
-                        '<button type="button" class="btn btn-sm btn-outline-danger p-1 lh-1" onclick="removeFromCart(' + item.product_id + ')">' +
-                        '<i class="bi bi-x"></i>' +
-                        '</button>' +
-                        '</div>' +
-                        // Quantity controls + line total
-                        '<div class="d-flex align-items-center gap-2">' +
-                        '<div class="input-group input-group-sm" style="width: 100px;">' +
-                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item.product_id + ', -1)">−</button>' +
-                        '<input type="number" class="form-control text-center px-1" value="' + item.quantity + '" min="1" max="' + item.max_stock + '" onchange="setQuantity(' + item.product_id + ', this.value)">' +
-                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item.product_id + ', 1)">+</button>' +
-                        '</div>' +
-                        '<div class="flex-grow-1 text-end fw-semibold">' + formatMoney(item.line_total) + '</div>' +
-                        '</div>' +
-                        // Item discount
-                        '<div class="d-flex align-items-center gap-2 bg-light rounded p-2 mt-2">' +
-                        '<span class="small text-muted">Discount:</span>' +
-                        '<select class="form-select form-select-sm" style="width: 80px;" onchange="updateItemDiscount(' + item.product_id + ', this.value, this.parentElement.querySelector(\'input\').value)">' +
-                        '<option value="">None</option>' +
-                        '<option value="fixed"' + (item.discount_type === 'fixed' ? ' selected' : '') + '>$</option>' +
-                        '<option value="percent"' + (item.discount_type === 'percent' ? ' selected' : '') + '>%</option>' +
-                        '</select>' +
-                        '<input type="number" class="form-control form-control-sm" style="width: 60px;" value="' + item.discount_value + '" min="0" step="0.01" oninput="updateItemDiscount(' + item.product_id + ', this.parentElement.querySelector(\'select\').value, this.value)">' +
-                        '<span class="small text-danger">-' + formatMoney(item.discount_amount) + '</span>' +
-                        '</div>' +
-                        '</div>';
-                });
-
-                container.innerHTML = html;
-                updateTotals();
-            }
-
-            // ─── Reset Cart ─────────────────────────────────────────────
-            function resetCart() {
-                cart = [];
-                document.getElementById('invoiceNoInput').value = '';
-                document.getElementById('invoiceDateInput').value = todayDate();
-                document.getElementById('invoiceDiscountType').value = '';
-                document.getElementById('invoiceDiscountValue').value = '0';
-
-                // Force hide item discount row when resetting
-                // document.getElementById('itemDiscountRow').style.display = 'none';
-                document.getElementById('itemDiscountDisplay').textContent = '- $ 0.00';
-
-                renderCart();
-            }
-
-            // ─── Build Payload for API ──────────────────────────────────
-            function buildInvoicePayload(status) {
-                let subtotal = getSubtotal();
-                let discountType = document.getElementById('invoiceDiscountType').value;
-                let discountValue = parseFloat(document.getElementById('invoiceDiscountValue').value) || 0;
-                let discountAmount = getInvoiceDiscountAmount();
-                let grandTotal = Math.round((subtotal - discountAmount) * 100) / 100;
-                let invoiceDate = document.getElementById('invoiceDateInput').value;
-                let invoiceNo = document.getElementById('invoiceNoInput').value || null;
-
-                let items = cart.map(function (item) {
-                    return {
-                        product_id: item.product_id,
-                        quantity: item.quantity,
-                        unit_price: item.unit_price,
-                        discount_type: item.discount_type || null,
-                        discount_value: item.discount_value,
-                        discount_amount: item.discount_amount,
-                        line_total: item.line_total
-                    };
-                });
+                let grandTotal = subtotal - discountAmount - invoiceDiscountAmount;
 
                 return {
                     invoice_no: invoiceNo,
+                    customer_id: customerId,
                     invoice_date: invoiceDate,
                     items: items,
-                    subtotal: Math.round(subtotal * 100) / 100,
-                    discount_type: discountType || null,
+                    subtotal: subtotal,
+                    discount_type: discountType,
                     discount_value: discountValue,
-                    discount_amount: Math.round(discountAmount * 100) / 100,
+                    discount_amount: invoiceDiscountAmount,
                     grand_total: grandTotal,
                     status: status
                 };
             }
+            function addToCart(productId) {
 
-            // ─── Submit Invoice ─────────────────────────────────────────
-            async function submitInvoice(status) {
-                if (cart.length === 0) {
-                    showErrorToast('Cart is empty.');
-                    return;
+                let p = allProducts.find(x => x.id == productId);
+                if (!p) return;
+
+                let existing = cart.find(x => x.product_id == productId);
+
+                if (existing) {
+                    existing.quantity++;
+                    existing.line_total = existing.quantity * existing.unit_price;
+                } else {
+
+                    cart.push({
+                        product_id: p.id,
+                        product_name: p.product_name,
+                        quantity: 1,
+                        unit_price: parseFloat(p.price),
+                        discount_type: null,
+                        discount_value: 0,
+                        discount_amount: 0,
+                        line_total: parseFloat(p.price)
+                    });
+
                 }
 
-                let payload = buildInvoicePayload(status);
-
-                if (!payload.invoice_date) {
-                    showErrorToast('Please set the invoice date.');
-                    return;
-                }
-
-                let btn = (status === 'finalized') ? document.getElementById('finalizeBtn') : document.getElementById('saveDraftBtn');
-                let originalHtml = btn.innerHTML;
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
-
-                try {
-                    let response = await axios.post(invoicesUrl, payload, authHeaders());
-
-                    if (response.data.success) {
-                        showSuccessToast(response.data.message || 'Invoice saved successfully.');
-                        resetCart();
-                    } else {
-                        showErrorToast(response.data.message || 'Failed to save invoice.');
-                    }
-                } catch (err) {
-                    showErrorToast(getErrorMessage(err, 'Failed to save invoice.'));
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = originalHtml;
-                }
+                renderCart();
             }
 
+            function renderCart() {
 
+                let container = document.getElementById('cartItemsContainer');
 
-            // ─── Event Listeners ────────────────────────────────────────
-            document.getElementById('searchInput').addEventListener('input', renderProducts);
-            document.getElementById('categoryFilter').addEventListener('change', renderProducts);
-            document.getElementById('invoiceDiscountType').addEventListener('change', function () { recalcCart(); renderCart(); });
-            document.getElementById('invoiceDiscountValue').addEventListener('input', function () { recalcCart(); renderCart(); });
+                if (!cart.length) {
+                    container.innerHTML = '<div class="text-center text-muted py-4">Cart is empty</div>';
+                    document.getElementById('totalsSection').style.display = 'none';
+                    document.getElementById('cartBadge').innerText = '0 items';
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                cart.forEach((item, index) => {
+
+                    container.innerHTML += `
+                                                                                                                                                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+
+                                                                                                                                                                    <div>
+                                                                                                                                                                        <div class="fw-semibold">${item.product_name}</div>
+                                                                                                                                                                        <div class="small text-muted">
+                                                                                                                                                                            ${item.quantity} × ${formatMoney(item.unit_price)}
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+
+                                                                                                                                                                    <div class="text-end">
+                                                                                                                                                                        <div class="fw-bold">${formatMoney(item.line_total)}</div>
+                                                                                                                                                                        <button class="btn btn-sm btn-outline-danger mt-1"
+                                                                                                                                                                                onclick="removeCartItem(${index})">
+                                                                                                                                                                                <i class="bi bi-x"></i>
+                                                                                                                                                                        </button>
+                                                                                                                                                                    </div>
+
+                                                                                                                                                                </div>`;
+                });
+
+                document.getElementById('cartBadge').innerText = cart.reduce((t, i) => t + i.quantity, 0) + ' items';
+                updateTotals();
+            }
+
+            function removeCartItem(index) {
+                cart.splice(index, 1);
+                renderCart();
+            }
+
+            function updateTotals() {
+
+                let subtotal = 0;
+
+                cart.forEach(i => {
+                    subtotal += i.line_total;
+                });
+
+                let discountType = document.getElementById('invoiceDiscountType').value;
+                let discountValue = parseFloat(document.getElementById('invoiceDiscountValue').value) || 0;
+
+                let invoiceDiscountAmount = 0;
+
+                if (discountType === 'percent') {
+                    invoiceDiscountAmount = subtotal * (discountValue / 100);
+                }
+
+                if (discountType === 'fixed') {
+                    invoiceDiscountAmount = discountValue;
+                }
+
+                let grandTotal = subtotal - invoiceDiscountAmount;
+
+                document.getElementById('subtotalDisplay').innerText = formatMoney(subtotal);
+                document.getElementById('grandTotalDisplay').innerText = formatMoney(grandTotal);
+
+                document.getElementById('totalsSection').style.display = 'block';
+
+                document.getElementById('finalizeBtn').disabled = false;
+                document.getElementById('saveDraftBtn').disabled = false;
+            }
+
+            document.getElementById('invoiceDiscountType').addEventListener('change', updateTotals);
+            document.getElementById('invoiceDiscountValue').addEventListener('input', updateTotals);
+
             document.getElementById('clearCartBtn').addEventListener('click', function () {
-                resetCart();
-                showSuccessToast('Cart cleared.');
+                cart = [];
+                renderCart();
             });
 
-            document.getElementById('finalizeBtn').addEventListener('click', function () { submitInvoice('finalized'); });
-            document.getElementById('saveDraftBtn').addEventListener('click', function () { submitInvoice('draft'); });
+            /* INIT INVOICE DATE */
+            document.getElementById('invoiceDateInput').value = new Date().toISOString().split('T')[0];
 
+            /* GENERATE INVOICE NUMBER */
+            document.getElementById('invoiceNoInput').value = 'INV-' + Date.now();
+            document.getElementById('finalizeBtn').addEventListener('click', async function () {
 
+                try {
+
+                    let payload = buildInvoicePayload('finalized');
+
+                    let r = await axios.post(invoicesUrl, payload, authHeaders());
+
+                    alert('Invoice created successfully');
+
+                    cart = [];
+                    renderCart();
+                    updateTotals();
+                    document.getElementById('invoiceNoInput').value = 'INV-' + Date.now();
+
+                } catch (e) {
+
+                    console.error('Invoice create failed', e);
+                    alert('Failed to create invoice');
+
+                }
+
+            });
+
+            document.getElementById('saveDraftBtn').addEventListener('click', async function () {
+
+                try {
+
+                    let payload = buildInvoicePayload('draft');
+
+                    let r = await axios.post(invoicesUrl, payload, authHeaders());
+
+                    alert('Draft saved successfully');
+
+                    cart = [];
+                    renderCart();
+                    updateTotals();
+                    document.getElementById('invoiceNoInput').value = 'INV-' + Date.now();
+                    
+                } catch (e) {
+
+                    console.error('Draft save failed', e);
+                    alert('Failed to save draft');
+
+                }
+
+            });
+
+            /* SEARCH PRODUCTS */
+            document.getElementById('searchInput').addEventListener('input', function () {
+
+                let q = this.value.toLowerCase();
+
+                let filtered = allProducts.filter(p => {
+                    return (
+                        (p.product_name && p.product_name.toLowerCase().includes(q)) ||
+                        (p.sku && p.sku.toLowerCase().includes(q))
+                    );
+                });
+
+                renderProducts(filtered);
+
+            });
+            /* CATEGORY FILTER */
+            document.getElementById('categoryFilter').addEventListener('change', function () {
+
+                let categoryId = this.value;
+
+                if (!categoryId) {
+                    renderProducts(allProducts);
+                    return;
+                }
+
+                let filtered = allProducts.filter(p => p.category_id == categoryId);
+
+                renderProducts(filtered);
+
+            });
+            loadCategories();
+            loadCustomers();
+            loadProducts();
         </script>
     @endpush
+
 @endsection
